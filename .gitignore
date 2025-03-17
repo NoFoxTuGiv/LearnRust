@@ -1,22 +1,23 @@
 # Ignore Rust build artifacts
 /target/
+*/target/
 # Ignore Cargo lock files
 Cargo.lock
 # Ignore the output of the `cargo clippy` command
 .clippy.toml
 # Ignore the output of the `cargo fmt` command
-/rustfmt.toml
+*/rustfmt.toml
 # Ignore the output of the `cargo doc` command
-/doc/
+*/doc/
 # Ignore the output of the `cargo package` command
 *.crate
 # Ignore the output of the `cargo test` command
-/cargo-test-files/
+*/cargo-test-files/
 # Ignore the output of the `cargo run` command
-/cargo-run-files/
+*/cargo-run-files/
 # Ignore editor temporary files
 *.swp
 # Ignore IntelliJ project files
-/.idea/
+*/.idea/
 # Ignore Visual Studio Code project files
-/.vscode/
+*/.vscode/
