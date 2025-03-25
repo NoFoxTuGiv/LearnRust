@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use nannou::prelude::*;
 
 struct Model {}
@@ -5,18 +7,22 @@ struct Model {}
 fn main() {
     nannou::app(model)
         .update(update)
-        .simple_window(view)
         .run();
 }
 
-fn model(_app: &App) -> Model {
+fn model(app: &App) -> Model {
+    app.new_window()
+    .size(800, 600)
+    .view(view)
+    .build()
+    .unwrap();
     Model {}
 }
 
-fn update(_app: &App, _model: &Model, _update: Update) {}
+fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
 fn view(app: &App, _model: &Model, frame: Frame) {
-    let draw  app.draw();
+    let draw = app.draw();
 
     draw.background().color(BLACK);
 
