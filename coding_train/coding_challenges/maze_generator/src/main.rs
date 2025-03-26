@@ -6,8 +6,8 @@ use cell::Cell;
 
 const WIDTH: u16 = 800;
 const HEIGHT: u16 = 600;
-const COLS: u16;
-const ROWS: u16;
+// const COLS: u16;
+// const ROWS: u16;
 
 struct Model {
     window: window::Id,
@@ -21,7 +21,7 @@ fn main() {
 
 fn model(app: &App) -> Model {
     let window = app.new_window()
-    .size(WIDTH, HEIGHT)
+    .size(WIDTH.into(), HEIGHT.into())
     .view(view)
     .build()
     .unwrap();

@@ -1,5 +1,4 @@
 use nannou::prelude::*;
-// use nannou::rand::random_range;
 
 pub struct Cell {
     col: u16,
@@ -8,7 +7,11 @@ pub struct Cell {
 }
 
 impl Cell {
-    pub fn new(&app: App) -> Self {
+    pub fn new(app: &App) -> Self {
+        //placeholder values
+        let col = 0;
+        let row = 0;
+        let w = 0;
         Self { col, row, w }
     }
 }
