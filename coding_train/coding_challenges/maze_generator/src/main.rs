@@ -1,31 +1,45 @@
 #![allow(dead_code)]
 mod cell;
 
-use nannou::prelude::*;
 use cell::Cell;
+use nannou::prelude::*;
 
 const WIDTH: u16 = 800;
-const HEIGHT: u16 = 600;
-// const COLS: u16;
-// const ROWS: u16;
+const HEIGHT: u16 = 800;
+const CELL_WIDTH: u16 = 40;
+const COLS: u16 = WIDTH / CELL_WIDTH;
+const ROWS: u16 = HEIGHT / CELL_WIDTH;
+const N: usize = (COLS * ROWS) as usize;
 
 struct Model {
     window: window::Id,
+    cells: [Cell; N],
 }
 
 fn main() {
-    nannou::app(model)
-        .update(update)
-        .run();
+    nannou::app(model).update(update).run();
 }
 
 fn model(app: &App) -> Model {
-    let window = app.new_window()
-    .size(WIDTH.into(), HEIGHT.into())
-    .view(view)
-    .build()
-    .unwrap();
-    Model { window }
+    let window = app
+        .new_window()
+        .size(WIDTH.into(), HEIGHT.into())
+        .view(view)
+        .build()
+        .unwrap();
+
+    let mut cells_vec = Vec::with_capacity(N);
+
+    for row in 0..ROWS {
+        for col in 0..COLS {
+            let cell = Cell::new(app, CELL_WIDTH, col, row);
+            cells_vec.push(cell);
+        }
+    }
+
+    let cells: [Cell; N] = cells_vec.try_into().unwrap();
+
+    Model { window, cells }
 }
 
 fn update(_app: &App, _model: &mut Model, _update: Update) {}

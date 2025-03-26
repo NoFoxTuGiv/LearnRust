@@ -1,5 +1,6 @@
 use nannou::prelude::*;
 
+#[derive(Debug)]
 pub struct Cell {
     col: u16,
     row: u16,
@@ -7,11 +8,7 @@ pub struct Cell {
 }
 
 impl Cell {
-    pub fn new(app: &App) -> Self {
-        //placeholder values
-        let col = 0;
-        let row = 0;
-        let w = 0;
+    pub fn new(_app: &App, w: u16, col: u16, row: u16) -> Self {
         Self { col, row, w }
     }
 }
