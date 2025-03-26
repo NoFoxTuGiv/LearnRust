@@ -27,27 +27,36 @@ fn model(app: &App) -> Model {
         .view(view)
         .build()
         .unwrap();
-
-    let mut cells_vec = Vec::with_capacity(N);
+    
+    let mut cells_ary: [Cell; N] = [Cell::new(0, 0, CELL_WIDTH); N];
 
     for row in 0..ROWS {
         for col in 0..COLS {
-            let cell = Cell::new(app, CELL_WIDTH, col, row);
-            cells_vec.push(cell);
+            let cell = Cell::new(col, row, CELL_WIDTH);
+            cells_ary[((row * COLS) + col) as usize] = cell
         }
     }
 
-    let cells: [Cell; N] = cells_vec.try_into().unwrap();
+    // After initializing cells_ary:
+    //for (i, cell) in cells_ary.iter().enumerate() {
+    //    println!("Cell {}: Column: {}, Row: {}", i, cell.col, cell.row);
+    //}
 
-    Model { window, cells }
+
+    Model { window, cells: cells_ary }
 }
 
 fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
-fn view(app: &App, _model: &Model, frame: Frame) {
+fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
-
     draw.background().color(BLACK);
+
+    let cells = model.cells;
+    for i in 0..cells.len() {
+        cells[i].show(&app);
+        //println!("Cell {}", i)
+    }
 
     draw.to_frame(app, &frame).unwrap();
 }
