@@ -10,11 +10,14 @@ struct Model {
 fn main() {
     nannou::app(model)
         .update(update)
+        // TODO: Figure out fps...
+        //.loop_mode(LoopMode::rate_fps(60.0))
         .simple_window(view)
         .run();
-}
+} 
 
 fn model(app: &App) -> Model {
+    //app.set_loop_mode(LoopMode::rate_fps(60.0));
     let stars = [Star::new(app); 800];
     Model { stars }
 }

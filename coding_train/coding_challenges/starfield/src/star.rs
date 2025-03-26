@@ -14,7 +14,7 @@ impl Star {
         let win = app.window_rect();
         let x = random_range(win.left(), win.right());
         let y = random_range(win.bottom(), win.top());
-        let z = random_range(0.0, win.h() / 2.0);
+        let z = random_range(0.0, win.h());
         // Honestly, just not a fan of the lines.
         // let prev_pos = pt2(0.0, 0.0);
 
@@ -24,7 +24,7 @@ impl Star {
 
     pub fn update(&mut self, app: &App) {
         let win = app.window_rect();
-        self.z = self.z - 10.0;
+        self.z -= 30.0;
         if self.z < 0.1 {
             self.z = random_range(0.0, win.h());
             self.x = random_range(win.left(), win.right());
