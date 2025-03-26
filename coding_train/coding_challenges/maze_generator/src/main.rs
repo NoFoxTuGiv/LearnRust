@@ -1,8 +1,17 @@
 #![allow(dead_code)]
+mod cell;
 
 use nannou::prelude::*;
+use cell::Cell;
 
-struct Model {}
+const WIDTH: u16 = 800;
+const HEIGHT: u16 = 600;
+const COLS: u16;
+const ROWS: u16;
+
+struct Model {
+    window: window::Id,
+}
 
 fn main() {
     nannou::app(model)
@@ -11,12 +20,12 @@ fn main() {
 }
 
 fn model(app: &App) -> Model {
-    app.new_window()
-    .size(800, 600)
+    let window = app.new_window()
+    .size(WIDTH, HEIGHT)
     .view(view)
     .build()
     .unwrap();
-    Model {}
+    Model { window }
 }
 
 fn update(_app: &App, _model: &mut Model, _update: Update) {}
