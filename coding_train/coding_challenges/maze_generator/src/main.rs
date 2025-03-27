@@ -14,6 +14,7 @@ const N: usize = (COLS * ROWS) as usize;
 struct Model {
     window: window::Id,
     cells: [Cell; N],
+    current_cell: usize,
 }
 
 fn main() {
@@ -28,19 +29,23 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
     
-    let mut cells_ary: [Cell; N] = [Cell::new(0, 0, CELL_WIDTH); N];
+    let mut cells: [Cell; N] = [Cell::new(0, 0, CELL_WIDTH); N];
 
     for row in 0..ROWS {
         for col in 0..COLS {
             let cell = Cell::new(col, row, CELL_WIDTH);
-            cells_ary[((row * COLS) + col) as usize] = cell
+            cells[((row * COLS) + col) as usize] = cell
         }
     }
+    
+    let current_cell = 0;
 
-    Model { window, cells: cells_ary }
+    Model { window, cells, current_cell }
 }
 
-fn update(_app: &App, _model: &mut Model, _update: Update) {}
+fn update(_app: &App, model: &mut Model, _update: Update) {
+    model.cells[model.current_cell].visited = true;
+}
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
