@@ -19,11 +19,50 @@ impl Cell {
         let cell_size = self.w as f32;
         let x = (self.col * self.w) as f32 - offset_x;
         let y = (self.row * self.w) as f32 - offset_y;
-        draw.rect()
-            .w_h(cell_size, cell_size)
-            .x_y(x, y)
-            .stroke_color(WHITE)
-            .stroke_weight(2.0)
-            .no_fill();
+
+        // North wall
+        let start_point = pt2(x - cell_size / 2.0, y + cell_size / 2.0);
+        let end_point   = pt2(x + cell_size / 2.0, y + cell_size / 2.0);
+        draw.line()
+            .start(start_point)
+            .end(end_point)
+            .weight(2.0)
+            .color(WHITE);
+
+        // East wall
+        let start_point = pt2(x + cell_size / 2.0, y + cell_size / 2.0);
+        let end_point   = pt2(x + cell_size / 2.0, y - cell_size / 2.0);
+        draw.line()
+            .start(start_point)
+            .end(end_point)
+            .weight(2.0)
+            .color(WHITE);
+
+        // South wall
+        let start_point = pt2(x - cell_size / 2.0, y - cell_size / 2.0);
+        let end_point   = pt2(x + cell_size / 2.0, y - cell_size / 2.0);
+        draw.line()
+            .start(start_point)
+            .end(end_point)
+            .weight(2.0)
+            .color(WHITE);
+
+        // West wall
+        let start_point = pt2(x - cell_size / 2.0, y - cell_size / 2.0);
+        let end_point   = pt2(x - cell_size / 2.0, y + cell_size / 2.0);
+        draw.line()
+            .start(start_point)
+            .end(end_point)
+            .weight(2.0)
+            .color(WHITE);
+
+
+
+        //draw.rect()
+        //    .w_h(cell_size, cell_size)
+        //    .x_y(x, y)
+        //    .stroke_color(WHITE)
+        //    .stroke_weight(2.0)
+        //    .no_fill();
     }
 }
