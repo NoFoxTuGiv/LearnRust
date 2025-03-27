@@ -1,16 +1,17 @@
 use nannou::prelude::*;
+use nannou::rand::random_range;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Cell {
-    pub col: u16,
-    pub row: u16,
-    pub w: u16,
+    pub col: i16,
+    pub row: i16,
+    pub w: i16,
     pub walls: [bool; 4],
     pub visited: bool,
 }
 
 impl Cell {
-    pub fn new(col: u16, row: u16, w: u16) -> Self {
+    pub fn new(col: i16, row: i16, w: i16) -> Self {
         let walls = [true, true, true, true];
         let visited = false;
         Self { col, row, w, walls, visited }
@@ -74,5 +75,37 @@ impl Cell {
                 .x_y(x, y)
                 .rgba(0.5, 0.0, 0.5, 0.5);
         }
+    }
+
+    fn calculate_index(c: i16, r: i16, cols: i16) -> i16 {
+        if c < 0 || r < 0 || c > cols || r > cols {
+            return -1;
+        }
+        return c + r * cols;
+    }
+
+    pub fn pick_next_index(&self, cols: i16) -> i16 {
+        let mut neighbors: [i16; 4] = [-1; 4];
+
+        let top = Cell::calculate_index(self.col.into(), self.row + 1, cols);
+        if top > -1 {
+            neighbors[0] = top;
+        }
+        let right = Cell::calculate_index(self.col + 1, self.row, cols);
+        if right > -1 {
+            neighbors[1] = right;
+        }
+        let bottom = Cell::calculate_index(self.col, self.row - 1, cols);
+        if bottom > -1 {
+            neighbors[2] = bottom;
+        }
+        let left = Cell::calculate_index(self.col - 1, self.row, cols);
+        if left > -1 {
+            neighbors[3] = left;
+        }
+
+        let r = random_range(0, 4);
+
+        return neighbors[r];
     }
 }
