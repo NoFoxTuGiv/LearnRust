@@ -12,25 +12,18 @@ impl Cell {
         Self { col, row, w }
     }
 
-    pub fn show(&self, app: &App) {
-        let draw = app.draw();
-        let win = app.window_rect();
+    pub fn show(&self, draw: &Draw, win: Rect) {
         // Calculate offsets to center the grid in the window.
-        let offset_x = win.w() as f32 / 2.0 - self.w as f32 / 2.0;
-        let offset_y = win.h() as f32 / 2.0 - self.w as f32 / 2.0;
+        let offset_x = win.w() / 2.0 - self.w as f32 / 2.0;
+        let offset_y = win.h() / 2.0 - self.w as f32 / 2.0;
+        let cell_size = self.w as f32;
+        let x = (self.col * self.w) as f32 - offset_x;
+        let y = (self.row * self.w) as f32 - offset_y;
         draw.rect()
-            .w_h(self.w as f32, self.w as f32)
-            .x_y((self.col * self.w) as f32 - offset_x, (self.row * self.w) as f32 - offset_y)
-            .stroke(WHITE)
+            .w_h(cell_size, cell_size)
+            .x_y(x, y)
+            .stroke_color(WHITE)
+            .stroke_weight(2.0)
             .no_fill();
     }
-
-    //pub fn show(self: &Self, app: &App) {
-    //    let draw = app.draw();
-    //    draw.rect()
-    //        .w_h(self.w.into(), self.w.into())
-    //        .x_y((self.col * self.w).into(), (self.row * self.w).into())
-    //        .stroke(WHITE)
-    //        .no_fill();
-    //}
 }

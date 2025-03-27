@@ -37,12 +37,6 @@ fn model(app: &App) -> Model {
         }
     }
 
-    // After initializing cells_ary:
-    //for (i, cell) in cells_ary.iter().enumerate() {
-    //    println!("Cell {}: Column: {}, Row: {}", i, cell.col, cell.row);
-    //}
-
-
     Model { window, cells: cells_ary }
 }
 
@@ -50,12 +44,11 @@ fn update(_app: &App, _model: &mut Model, _update: Update) {}
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
+    let win = app.window_rect();
     draw.background().color(BLACK);
 
-    let cells = model.cells;
-    for i in 0..cells.len() {
-        cells[i].show(&app);
-        //println!("Cell {}", i)
+    for cell in model.cells.iter() {
+        cell.show(&draw, win);
     }
 
     draw.to_frame(app, &frame).unwrap();
