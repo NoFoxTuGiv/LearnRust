@@ -1,7 +1,9 @@
 [package]
 name = "starfield"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
+author = "Aaron Chavez"
+description = "A simple starfield animation in Rust using Nannou."
 
 [dependencies]
 nannou = "0.19"
