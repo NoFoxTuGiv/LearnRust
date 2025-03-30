@@ -6,6 +6,4 @@ I'm trying to learn Rust, so this is where I'm gonna stick my notes and projects
 
 ## Why?
 
-Because I find this way of learning easy, and it gives me stuff to reference later on that isn't a 3 hour YouTube video.
-
-Having quick examples of syntax and such that I can read in-IDE just works for me, idk why. Yes it's weird.
+Something to show off, and because I move around between at least 3 different computers throughout the day.

@@ -2,7 +2,7 @@
 name = "starfield"
 version = "1.0.0"
 edition = "2024"
-author = "Aaron Chavez"
+authors = ["Aaron Chavez"]
 description = "A simple starfield animation in Rust using Nannou."
 
 [dependencies]

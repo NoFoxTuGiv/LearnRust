@@ -1,8 +1,8 @@
 [package]
 name = "maze_generator"
 version = "0.1.0"
+authors = ["Aaron Chavez"]
 edition = "2024"
-author = "Aaron Chavez"
 description = "A simple DFS maze generator in Rust using Nannou."
 
 [dependencies]
