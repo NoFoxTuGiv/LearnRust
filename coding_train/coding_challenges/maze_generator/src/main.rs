@@ -80,34 +80,34 @@ fn remove_walls(cells: &mut [Cell; N], a_index: usize, b_index: usize) {
     let y = cells[a_index].row - cells[b_index].row;
 
     if x == 1 {
-        let a = (&mut cells[a_index]);
+        let a = &mut cells[a_index];
         a.walls[3] = false;
     } else if x == -1 {
-        let a = (&mut cells[a_index]);
+        let a = &mut cells[a_index];
         a.walls[1] = false;
     }
 
     if x == 1 {
-        let b = (&mut cells[b_index]);
+        let b = &mut cells[b_index];
         b.walls[1] = false;
     } else if x == -1 {
-        let b = (&mut cells[b_index]);
+        let b = &mut cells[b_index];
         b.walls[3] = false;
     }
 
     if y == 1 {
-        let a = (&mut cells[a_index]);
+        let a = &mut cells[a_index];
         a.walls[0] = false;
     } else if y == -1 {
-        let a = (&mut cells[a_index]);
+        let a = &mut cells[a_index];
         a.walls[2] = false;
     }
 
     if y == 1 {
-        let b = (&mut cells[b_index]);
+        let b = &mut cells[b_index];
         b.walls[2] = false;
     } else if y == -1 {
-        let b = (&mut cells[b_index]);
+        let b = &mut cells[b_index];
         b.walls[0] = false;
     }
 }
