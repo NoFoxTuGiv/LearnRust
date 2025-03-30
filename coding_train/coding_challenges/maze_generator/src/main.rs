@@ -53,13 +53,6 @@ fn update(_app: &App, model: &mut Model, _update: Update) {
     let next_index = model.cells[model.current_cell].pick_next_index(COLS);
     if let Some(next_index) = next_index {
         if !model.cells[next_index as usize].visited {
-            // println!(
-            //     "Current cell at {},{}, Next cell at {},{}",
-            //     model.cells[model.current_cell].col,
-            //     model.cells[model.current_cell].row,
-            //     model.cells[next_index as usize].col,
-            //     model.cells[next_index as usize].row,
-            // );
             remove_walls(&mut model.cells, model.current_cell, next_index as usize);
             model.current_cell = next_index as usize;
         }
@@ -84,17 +77,13 @@ fn remove_walls(cells: &mut [Cell; N], a_index: usize, b_index: usize) {
     if x == 1 {
         let a = &mut cells[a_index];
         a.walls[3] = false;
-        // println!("Removing West wall of cell A at {},{}", a.col, a.row);
         let b = &mut cells[b_index];
         b.walls[1] = false;
-        // println!("Removing East wall of cell B at {},{}", b.col, b.row);
     } else if x == -1 {
         let a = &mut cells[a_index];
         a.walls[1] = false;
-        // println!("Removing East wall of cell A at {},{}", a.col, a.row);
         let b = &mut cells[b_index];
         b.walls[3] = false;
-        // println!("Removing West wall of cell B at {},{}", b.col, b.row);
     }
 
     let y = cells[a_index].row - cells[b_index].row;
@@ -102,16 +91,12 @@ fn remove_walls(cells: &mut [Cell; N], a_index: usize, b_index: usize) {
     if y == -1 {
         let a = &mut cells[a_index];
         a.walls[0] = false;
-        // println!("Removing North wall of cell A at {}, {}.", a.col, a.row);
         let b = &mut cells[b_index];
         b.walls[2] = false;
-        // println!("Removing South wall of cell B at {}, {}.", b.col, b.row);
     } else if y == 1 {
         let a = &mut cells[a_index];
         a.walls[2] = false;
-        // println!("Removing South wall of cell A at {}, {}.", a.col, a.row);
         let b = &mut cells[b_index];
         b.walls[0] = false;
-        // println!("Removing North wall of cell B at {}, {}.", b.col, b.row);
     }
 }
