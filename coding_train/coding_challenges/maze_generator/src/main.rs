@@ -28,7 +28,7 @@ fn model(app: &App) -> Model {
         .view(view)
         .build()
         .unwrap();
-    
+
     let mut cells: [Cell; N] = [Cell::new(0, 0, CELL_WIDTH); N];
 
     for row in 0..ROWS {
@@ -37,18 +37,25 @@ fn model(app: &App) -> Model {
             cells[((row * COLS) + col) as usize] = cell
         }
     }
-    
+
     let current_cell = 0;
 
-    Model { window, cells, current_cell }
+    Model {
+        window,
+        cells,
+        current_cell,
+    }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     model.cells[model.current_cell].visited = true;
 
     let next_index = model.cells[model.current_cell].pick_next_index(COLS);
-    if next_index > -1 && !model.cells[next_index as usize].visited {
-        model.current_cell = next_index as usize;
+    if let Some(next_index) = next_index {
+        if !model.cells[next_index as usize].visited {
+            remove_walls(&mut model.cells, model.current_cell, next_index as usize);
+            model.current_cell = next_index as usize;
+        }
     }
 }
 
@@ -62,4 +69,45 @@ fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     draw.to_frame(app, &frame).unwrap();
+}
+
+fn remove_walls(cells: &mut [Cell; N], a_index: usize, b_index: usize) {
+    // let (a, b) = (&mut cells[a_index], &mut cells[b_index]);
+    // let x = a.col - b.col;
+    // let y = a.row - b.row;
+
+    let x = cells[a_index].col - cells[b_index].col;
+    let y = cells[a_index].row - cells[b_index].row;
+
+    if x == 1 {
+        let a = (&mut cells[a_index]);
+        a.walls[3] = false;
+    } else if x == -1 {
+        let a = (&mut cells[a_index]);
+        a.walls[1] = false;
+    }
+
+    if x == 1 {
+        let b = (&mut cells[b_index]);
+        b.walls[1] = false;
+    } else if x == -1 {
+        let b = (&mut cells[b_index]);
+        b.walls[3] = false;
+    }
+
+    if y == 1 {
+        let a = (&mut cells[a_index]);
+        a.walls[0] = false;
+    } else if y == -1 {
+        let a = (&mut cells[a_index]);
+        a.walls[2] = false;
+    }
+
+    if y == 1 {
+        let b = (&mut cells[b_index]);
+        b.walls[2] = false;
+    } else if y == -1 {
+        let b = (&mut cells[b_index]);
+        b.walls[0] = false;
+    }
 }

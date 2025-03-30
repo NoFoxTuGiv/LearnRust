@@ -14,7 +14,13 @@ impl Cell {
     pub fn new(col: i16, row: i16, w: i16) -> Self {
         let walls = [true, true, true, true];
         let visited = false;
-        Self { col, row, w, walls, visited }
+        Self {
+            col,
+            row,
+            w,
+            walls,
+            visited,
+        }
     }
 
     pub fn show(&self, draw: &Draw, win: Rect) {
@@ -25,48 +31,29 @@ impl Cell {
         let x = (self.col * self.w) as f32 - offset_x;
         let y = (self.row * self.w) as f32 - offset_y;
 
-        // North wall
-        if self.walls[0] {
-            let start_point = pt2(x - wall_offset, y + wall_offset);
-            let end_point   = pt2(x + wall_offset, y + wall_offset);
-            draw.line()
-                .start(start_point)
-                .end(end_point)
-                .weight(2.0)
-                .color(WHITE);
-        }
+        let directions = [
+            (
+                pt2(x - wall_offset, y + wall_offset),
+                pt2(x + wall_offset, y + wall_offset),
+            ), // North
+            (
+                pt2(x + wall_offset, y + wall_offset),
+                pt2(x + wall_offset, y - wall_offset),
+            ), // East
+            (
+                pt2(x - wall_offset, y - wall_offset),
+                pt2(x + wall_offset, y - wall_offset),
+            ), // South
+            (
+                pt2(x - wall_offset, y - wall_offset),
+                pt2(x - wall_offset, y + wall_offset),
+            ), // West
+        ];
 
-        // East wall
-        if self.walls[1] {
-            let start_point = pt2(x + wall_offset, y + wall_offset);
-            let end_point   = pt2(x + wall_offset, y - wall_offset);
-            draw.line()
-                .start(start_point)
-                .end(end_point)
-                .weight(2.0)
-                .color(WHITE);
-        }
-
-        // South wall
-        if self.walls[2] {
-            let start_point = pt2(x - wall_offset, y - wall_offset);
-            let end_point   = pt2(x + wall_offset, y - wall_offset);
-            draw.line()
-                .start(start_point)
-                .end(end_point)
-                .weight(2.0)
-                .color(WHITE);
-        }
-
-        // West wall
-        if self.walls[3] {
-            let start_point = pt2(x - wall_offset, y - wall_offset);
-            let end_point   = pt2(x - wall_offset, y + wall_offset);
-            draw.line()
-                .start(start_point)
-                .end(end_point)
-                .weight(2.0)
-                .color(WHITE);
+        for (i, &(start, end)) in directions.iter().enumerate() {
+            if self.walls[i] {
+                draw.line().start(start).end(end).weight(0.5).color(WHITE);
+            }
         }
 
         if self.visited {
@@ -77,35 +64,35 @@ impl Cell {
         }
     }
 
-    fn calculate_index(c: i16, r: i16, cols: i16) -> i16 {
-        if c < 0 || r < 0 || c > cols || r > cols {
-            return -1;
+    fn calculate_index(c: i16, r: i16, cols: i16) -> Option<i16> {
+        if c < 0 || r < 0 || c >= cols || r >= cols {
+            None
+        } else {
+            Some(c + r * cols)
         }
-        return c + r * cols;
     }
 
-    pub fn pick_next_index(&self, cols: i16) -> i16 {
-        let mut neighbors: [i16; 4] = [-1; 4];
+    pub fn pick_next_index(&self, cols: i16) -> Option<i16> {
+        let mut neighbors = vec![];
 
-        let top = Cell::calculate_index(self.col.into(), self.row + 1, cols);
-        if top > -1 {
-            neighbors[0] = top;
+        if let Some(top) = Cell::calculate_index(self.col, self.row + 1, cols) {
+            neighbors.push(top);
         }
-        let right = Cell::calculate_index(self.col + 1, self.row, cols);
-        if right > -1 {
-            neighbors[1] = right;
+        if let Some(right) = Cell::calculate_index(self.col + 1, self.row, cols) {
+            neighbors.push(right);
         }
-        let bottom = Cell::calculate_index(self.col, self.row - 1, cols);
-        if bottom > -1 {
-            neighbors[2] = bottom;
+        if let Some(bottom) = Cell::calculate_index(self.col, self.row - 1, cols) {
+            neighbors.push(bottom);
         }
-        let left = Cell::calculate_index(self.col - 1, self.row, cols);
-        if left > -1 {
-            neighbors[3] = left;
+        if let Some(left) = Cell::calculate_index(self.col - 1, self.row, cols) {
+            neighbors.push(left);
         }
 
-        let r = random_range(0, 4);
-
-        return neighbors[r];
+        if neighbors.is_empty() {
+            None
+        } else {
+            let r = random_range(0, neighbors.len());
+            Some(neighbors[r])
+        }
     }
 }
