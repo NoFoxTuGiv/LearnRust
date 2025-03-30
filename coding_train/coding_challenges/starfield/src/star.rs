@@ -6,7 +6,6 @@ pub struct Star {
     x: f32,
     y: f32,
     z: f32,
-    // prev_pos: Option<Point2>,
 }
 
 impl Star {
@@ -15,11 +14,8 @@ impl Star {
         let x = random_range(win.left(), win.right());
         let y = random_range(win.bottom(), win.top());
         let z = random_range(0.0, win.h());
-        // Honestly, just not a fan of the lines.
-        // let prev_pos = pt2(0.0, 0.0);
-
         // Set this once at the beginning for each star.
-        Self { x, y, z, /*prev_pos: Some(prev_pos)*/ }
+        Self { x, y, z }
     }
 
     pub fn update(&mut self, app: &App) {
@@ -30,12 +26,6 @@ impl Star {
             self.x = random_range(win.left(), win.right());
             self.y = random_range(win.bottom(), win.right());
         }
-
-        // Honestly, just not a fan of the lines.
-        // self.prev_pos = Some(pt2(
-        //     map_range(self.x / (self.z + 10.0), 0.0, 1.0, 0.0, win.w()),
-        //     map_range(self.y/ (self.z + 10.0), 0.0, 1.0, 0.0, win.h()),
-        // ));
     }
 
     pub fn show(self: &Self, app: &App, draw: &Draw) {
@@ -44,18 +34,6 @@ impl Star {
         let sy: f32 = map_range(self.y / self.z, 0.0, 1.0, 0.0, win.h());
         let r: f32 = map_range(self.z, 0.0, win.w(), 8.0, 0.01);
 
-        // Honestly, just not a fan of the lines.
-        // if let Some(prev_pos) = self.prev_pos {
-        //     draw.line()
-        //         .start(prev_pos)
-        //         .end(pt2(sx, sy))
-        //         .color(WHITE)
-        //         .weight(r);
-        // }
-
-        draw.ellipse()
-            .x_y(sx, sy)
-            .radius(r)
-            .color(WHITE);
+        draw.ellipse().x_y(sx, sy).radius(r).color(WHITE);
     }
 }
