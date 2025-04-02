@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 mod cell;
 
 use cell::Cell;
@@ -11,6 +10,8 @@ const COLS: i16 = WIDTH / CELL_WIDTH;
 const ROWS: i16 = HEIGHT / CELL_WIDTH;
 const N: usize = (COLS * ROWS) as usize;
 
+//Need window, but Rust compiler doesn't realize it's used.
+#[allow(dead_code)]
 struct Model {
     window: window::Id,
     cells: [Cell; N],
