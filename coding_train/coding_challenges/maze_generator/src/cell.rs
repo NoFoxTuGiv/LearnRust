@@ -64,7 +64,7 @@ impl Cell {
         }
     }
 
-    fn calculate_index(c: i16, r: i16, cols: i16) -> Option<i16> {
+    pub fn calculate_index(c: i16, r: i16, cols: i16) -> Option<i16> {
         if c < 0 || r < 0 || c >= cols || r >= cols {
             None
         } else {
