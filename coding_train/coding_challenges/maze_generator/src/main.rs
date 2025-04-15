@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 mod cell;
 
 use cell::Cell;
@@ -11,10 +10,13 @@ const COLS: i16 = WIDTH / CELL_WIDTH;
 const ROWS: i16 = HEIGHT / CELL_WIDTH;
 const N: usize = (COLS * ROWS) as usize;
 
+//Need window, but Rust compiler doesn't realize it's used.
+#[allow(dead_code)]
 struct Model {
     window: window::Id,
     cells: [Cell; N],
     current_cell: usize,
+    stack: Vec<usize>,
 }
 
 fn main() {
@@ -40,22 +42,64 @@ fn model(app: &App) -> Model {
 
     let current_cell = 0;
 
+    let stack: Vec<usize> = Vec::new();
+
     Model {
         window,
         cells,
         current_cell,
+        stack,
     }
 }
 
 fn update(_app: &App, model: &mut Model, _update: Update) {
     model.cells[model.current_cell].visited = true;
 
-    let next_index = model.cells[model.current_cell].pick_next_index(COLS);
-    if let Some(next_index) = next_index {
-        if !model.cells[next_index as usize].visited {
-            remove_walls(&mut model.cells, model.current_cell, next_index as usize);
-            model.current_cell = next_index as usize;
+    let current_col = model.cells[model.current_cell].col;
+    let current_row = model.cells[model.current_cell].row;
+
+    let mut neighbors = Vec::new();
+
+    // Check top neighbor
+    if let Some(index) = Cell::calculate_index(current_col, current_row + 1, COLS) {
+        let idx = index as usize;
+        if !model.cells[idx].visited {
+            neighbors.push(idx);
         }
+    }
+
+    // Check right neighbor
+    if let Some(index) = Cell::calculate_index(current_col + 1, current_row, COLS) {
+        let idx = index as usize;
+        if !model.cells[idx].visited {
+            neighbors.push(idx);
+        }
+    }
+
+    // Check bottom neighbor
+    if let Some(index) = Cell::calculate_index(current_col, current_row - 1, COLS) {
+        let idx = index as usize;
+        if !model.cells[idx].visited {
+            neighbors.push(idx);
+        }
+    }
+
+    // Check left neighbor
+    if let Some(index) = Cell::calculate_index(current_col - 1, current_row, COLS) {
+        let idx = index as usize;
+        if !model.cells[idx].visited {
+            neighbors.push(idx);
+        }
+    }
+
+    if !neighbors.is_empty() {
+        let next_idx = neighbors[random_range(0, neighbors.len())];
+        remove_walls(&mut model.cells, model.current_cell, next_idx);
+        model.stack.push(model.current_cell);
+        model.current_cell = next_idx;
+    } else if !model.stack.is_empty() {
+        model.current_cell = model.stack.pop().unwrap();
+        //println!("Backtracking to cell number {}", model.current_cell);
     }
 }
 

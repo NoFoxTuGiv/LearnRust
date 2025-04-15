@@ -1,5 +1,4 @@
 use nannou::prelude::*;
-use nannou::rand::random_range;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Cell {
@@ -64,35 +63,11 @@ impl Cell {
         }
     }
 
-    fn calculate_index(c: i16, r: i16, cols: i16) -> Option<i16> {
+    pub fn calculate_index(c: i16, r: i16, cols: i16) -> Option<i16> {
         if c < 0 || r < 0 || c >= cols || r >= cols {
             None
         } else {
             Some(c + r * cols)
-        }
-    }
-
-    pub fn pick_next_index(&self, cols: i16) -> Option<i16> {
-        let mut neighbors = vec![];
-
-        if let Some(top) = Cell::calculate_index(self.col, self.row + 1, cols) {
-            neighbors.push(top);
-        }
-        if let Some(right) = Cell::calculate_index(self.col + 1, self.row, cols) {
-            neighbors.push(right);
-        }
-        if let Some(bottom) = Cell::calculate_index(self.col, self.row - 1, cols) {
-            neighbors.push(bottom);
-        }
-        if let Some(left) = Cell::calculate_index(self.col - 1, self.row, cols) {
-            neighbors.push(left);
-        }
-
-        if neighbors.is_empty() {
-            None
-        } else {
-            let r = random_range(0, neighbors.len());
-            Some(neighbors[r])
         }
     }
 }
