@@ -1,31 +1,39 @@
-use nannou::prelude::*;
-use nannou::noise::Perlin;
+#![allow(dead_code)]
 
-struct Model{
-    x_off_a: usize,
-    x_off_b: usize,
+use macroquad::prelude::*;
+
+struct Walker {
+    x: f32,
+    y: f32,
 }
 
-fn main() {
-    nannou::app(model)
-        .update(update)
-        .simple_window(view)
-        .run();
+impl Walker {
+    fn show(&self) {
+        draw_circle(self.x, self.y, 5.0, WHITE);
+    }
+
+    fn step(&mut self) {
+        let choice = rand::gen_range(0, 4);
+
+        match choice {
+            0 => self.x += 1.0,
+            1 => self.x -= 1.0,
+            2 => self.y += 1.0,
+            3 => self.y -= 1.0,
+            _ => panic!("Choice selection out of range during step() function."),
+        }
+    }
 }
 
-fn model(_app: &App) -> Model {
-    let x_off_a = 0;
-    let x_off_b = 1000;
+#[macroquad::main("")]
+async fn main() {
+    loop {
+        clear_background(BLACK);
 
-    Model{ x_off_a, x_off_b }
-}
+        let walker = Walker { x:screen_width() / 2.0, y:screen_height() / 2.0 };
 
-fn update(_app: &App, model: &mut Model, _update: Update) {
-    model.x_off_a += 1;
-    model.x_off_b += 1;
-}
+        walker.show();
 
-fn view(app: &App, model: &Model, _frame: Frame) {
-    let draw = app.draw();
-    draw.background().color(BLACK);
+        next_frame().await
+    }
 }
