@@ -1,0 +1,11 @@
+[package]
+name = "perlin_graph"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+macroquad = "0.4"
+noise = "0.9"
+
+[profile.dev]
+opt-level = 1
