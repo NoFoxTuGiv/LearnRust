@@ -1,10 +1,10 @@
 use macroquad::prelude::*;
-use noise::{NoiseFn, Perlin};
+use noise::{ Fbm, NoiseFn, Perlin};
 
 #[macroquad::main("Perlin Noise Graph")]
 async fn main() {
-    let rand = rand::gen_range(0,100);
-    let perlin = Perlin::new(rand);
+    let r = rand::gen_range(0,100);
+    let noise = Fbm::<Perlin>::new(r);
     let width = screen_width();
     let height = screen_height();
     let y_scale = height / 2.5;
@@ -27,7 +27,7 @@ async fn main() {
             let mut amplitude = 1.0;
 
             for _ in 0..octaves {
-                noise_val += perlin.get([(nx as f64 + t) * frequency]) as f32 * amplitude;
+                noise_val += noise.get([(nx as f64 + t) * frequency, 0.0]) as f32 * amplitude;
                 frequency *= 2.0;
                 amplitude *= persistence;
             }

@@ -10,7 +10,7 @@ impl Walker {
         draw_circle(self.pos.x, self.pos.y, 5.0, WHITE);
     }
 
-    fn step(&mut self) {
+    fn random_step(&mut self) {
         let x: f32 = rand::gen_range(-1.0, 1.0);
         let y: f32 = rand::gen_range(-1.0,  1.0);
 
@@ -33,7 +33,7 @@ async fn main() {
     loop {
         clear_background(BLACK);
 
-        walker.step();
+        walker.random_step();
         let pos = walker.pos_key();
         trail.insert(pos);
 

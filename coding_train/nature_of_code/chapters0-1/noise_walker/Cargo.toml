@@ -1,0 +1,12 @@
+[package]
+name = "noise_walker"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+macroquad = "0.4.14"
+map-range = "0.1.2"
+noise = "0.9.0"
+
+[profile.dev]
+opt-level=1
