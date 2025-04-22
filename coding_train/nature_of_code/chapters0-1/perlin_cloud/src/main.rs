@@ -15,10 +15,11 @@ async fn main() {
 
     let mut texture_data = vec![0u8; (width * height * 4.0) as usize];
 
+    let texture = Texture2D::from_rgba8(width as u16, height as u16, &texture_data);
+
+    texture.set_filter(FilterMode::Linear);
+
     loop {
-        clear_background(BLACK);
-
-
         for y in 0..height as usize {
             for x in 0..width as usize {
                 let noise_value = noise.get([(x as f64 * scale), (y as f64 * scale), t]);
@@ -33,8 +34,9 @@ async fn main() {
             }
         }
 
-        let texture = Texture2D::from_rgba8(width as u16, height as u16, &texture_data);
+        texture.update_from_bytes(width as u32, height as u32, &texture_data);
 
+        clear_background(BLACK);
         draw_texture(&texture, 0.0, 0.0, WHITE);
 
         t += 0.01;
