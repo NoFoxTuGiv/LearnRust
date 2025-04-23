@@ -1,8 +1,11 @@
 use macroquad::prelude::*;
 use noise::{ Fbm, Perlin, NoiseFn };
+use miniquad::date;
 
 #[macroquad::main("Perlin Cloud")]
 async fn main() {
+    rand::srand(date::now() as u64);
+
     let width = screen_width();
     let height = screen_height();
 
@@ -40,8 +43,6 @@ async fn main() {
         draw_texture(&texture, 0.0, 0.0, WHITE);
 
         t += 0.01;
-
-        draw_fps();
 
         next_frame().await;
     }

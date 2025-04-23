@@ -3,6 +3,7 @@
 use macroquad::prelude::*;
 use noise::{ Fbm, NoiseFn, Perlin };
 use std::collections::HashSet;
+use miniquad::date;
 
 struct Walker {
     tx: f64,
@@ -46,7 +47,11 @@ impl Walker {
 async fn main() {
     let mut walker = Walker { tx: 1.0, ty: 69000.0, x: screen_width() as f64 / 2.0, y: screen_height() as f64 / 2.0 };
 
-    let noise = Fbm::<Perlin>::new(0);
+    rand::srand(date::now() as u64);
+
+    let r = rand::gen_range(1,u32::MAX);
+
+    let noise = Fbm::<Perlin>::new(r);
 
     let mut trail: HashSet<(i32, i32)> = HashSet::new();
 
@@ -62,8 +67,6 @@ async fn main() {
         }
 
         walker.show();
-
-        draw_fps();
 
         next_frame().await
     }

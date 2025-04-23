@@ -1,9 +1,12 @@
 use macroquad::prelude::*;
 use noise::{ Fbm, NoiseFn, Perlin};
+use miniquad::date;
 
 #[macroquad::main("Perlin Noise Graph")]
 async fn main() {
-    let r = rand::gen_range(0,100);
+    rand::srand(date::now() as u64);
+
+    let r = rand::gen_range(0,u32::MAX);
     let noise = Fbm::<Perlin>::new(r);
 
     let width = screen_width();
@@ -32,8 +35,6 @@ async fn main() {
             last_x = x as f32;
             last_y = y;
         }
-
-        draw_fps();
 
         t += 0.01;
         next_frame().await;
