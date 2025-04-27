@@ -3,11 +3,11 @@ use macroquad::models::{ draw_mesh, Mesh, Vertex};
 use noise::{Fbm, NoiseFn, Perlin};
 use miniquad::date;
 
-const WIDTH:        f32 = 1500.;
-const HEIGHT:       f32 = 550.;
+const WIDTH:        f32 = 2000.;
+const HEIGHT:       f32 = 800.;
 const SCL:          f32 = 30.;
 const FLY_SPEED:    f32 = 0.006;
-const HEIGHT_AMPL:  f32 = 70.0;
+const HEIGHT_AMPL:  f32 = 65.0;
 const COLS:         usize = (WIDTH / SCL) as usize;
 const ROWS:         usize = (HEIGHT / SCL) as usize;
 const CHUNK: usize = 16;
@@ -19,7 +19,7 @@ async fn main() {
     let seed = rand::gen_range(0,u32::MAX);
     let noise = Fbm::<Perlin>::new(seed);
 
-    let purple = Color::new(0.45, 0.10, 0.65, 1.0);
+    let purple = Color::new(0.40, 0.05, 0.60, 1.0);
     let teal = Color::new(0.00, 0.80, 0.75, 1.0);
     let max_dis = (vec2(COLS as f32 * SCL * 0.5, ROWS as f32 * SCL * 0.5)).length();
 
@@ -30,7 +30,7 @@ async fn main() {
     );
 
     let camera = Camera3D {
-        position: world_center + vec3(10., 300., -300.),
+        position: world_center + vec3(25., 400., -400.),
         target: world_center,
         up: vec3(0., 1., 0.),
         fovy: 75f32.to_radians(),
@@ -57,13 +57,13 @@ async fn main() {
                         let y = map_range(h, 0., 1., -HEIGHT_AMPL, HEIGHT_AMPL);
                         let x = ((base_i + local_i) as f32 * SCL) - (COLS as f32 * SCL * 0.5);
                         let z = ((base_j + local_j) as f32 * SCL) - (ROWS as f32 * SCL * 0.5);
-                        let center_dis = vec2(x, z).length();
-                        let t = 1.0 - (center_dis / max_dis).min(1.0);
+                        let center_dis = vec2(x, 0.0).length();
+                        let t = (1.0 - (center_dis / max_dis)).powf(2.8).min(1.0);
                         let fill_color = Color::new(
                             lerp(purple.r, teal.r, t),
                             lerp(purple.g, teal.g, t),
                             lerp(purple.b, teal.b, t),
-                            0.85,
+                            0.9,
                         );
                         verts.push(Vertex::new2(vec3(x, y, z), vec2(0., 0.), fill_color));
                         x_off += 0.1;
@@ -107,8 +107,8 @@ fn map_range(
 fn window_conf() -> Conf {
     Conf {
         window_title: "Perlin Terrain".to_owned(),
-        window_width: 400,
-        window_height: 300,
+        window_width: 800,
+        window_height: 600,
         window_resizable: false,
         high_dpi: true,
         ..Default::default()

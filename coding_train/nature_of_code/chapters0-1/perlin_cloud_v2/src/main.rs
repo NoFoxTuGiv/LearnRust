@@ -89,7 +89,7 @@ async fn main() {
         for chunk in &chunks { draw_mesh(&chunk.mesh); }
         set_default_camera();
         
-        draw_fps();
+        //draw_fps();
 
         next_frame().await;
     }
