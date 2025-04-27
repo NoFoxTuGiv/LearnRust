@@ -39,7 +39,7 @@ async fn main() {
 
     loop {
         flying += FLY_SPEED;
-        clear_background(GRAY);
+        clear_background(BLACK);
         set_camera(&camera);
 
         for base_j in (0..ROWS).step_by(CHUNK) {
