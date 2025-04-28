@@ -3,18 +3,20 @@ use macroquad::prelude::*;
 pub struct Ball {
     pub pos: Vec2,
     pub vel: Vec2,
-    w: f32,
-    half_w: f32
+    pub d: f32,
+    pub r: f32
 }
 
 impl Ball {
-
     pub fn new(pos: Vec2, vel: Vec2) -> Ball {
+        let d = 8.;
+        let r = d / 2.;
+
         Ball {
-            pos: pos,
-            vel: vel,
-            w: 4.,
-            half_w: 4. / 2.,
+            pos,
+            vel,
+            d,
+            r,
         }
     }
 
@@ -30,7 +32,7 @@ impl Ball {
     }
 
     pub fn draw(&self) {
-        draw_circle(self.pos.x, self.pos.y, self.w, WHITE);
+        draw_circle(self.pos.x, self.pos.y, self.r, WHITE);
     }
 }
 
