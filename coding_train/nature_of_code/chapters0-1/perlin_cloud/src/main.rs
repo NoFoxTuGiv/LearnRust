@@ -4,8 +4,8 @@ use macroquad::{
 };
 use noise::{ Fbm, NoiseFn, Perlin};
 
-const WIDTH: f32 = 400.;
-const HEIGHT: f32 = 300.;
+const WIDTH: f32 = 800.;
+const HEIGHT: f32 = 600.;
 const SCL: f32 = 2.;
 
 const COLS: usize = (WIDTH / SCL) as usize;
@@ -89,7 +89,7 @@ async fn main() {
         for chunk in &chunks { draw_mesh(&chunk.mesh); }
         set_default_camera();
         
-        //draw_fps();
+        draw_fps();
 
         next_frame().await;
     }
@@ -100,8 +100,8 @@ fn sky_blue() -> Color { Color::new(0.45, 0.73, 0.92, 1.0) }
 fn window_conf() -> Conf {
     Conf {
         window_title: "Perlin Cloud".to_owned(),
-        window_width: 400,
-        window_height: 300,
+        window_width: WIDTH as i32,
+        window_height: HEIGHT as i32,
         window_resizable: false,
         high_dpi: true,
         ..Default::default()

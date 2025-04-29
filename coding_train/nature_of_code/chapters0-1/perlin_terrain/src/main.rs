@@ -79,7 +79,7 @@ async fn main() {
                         let bl = ((lj+1) * patch_cols + li) as u16;
                         let br = bl + 1;
 
-                        inds.extend_from_slice(&[tl, bl, tr, tr, bl, br]);
+                        inds.extend_from_slice(&[tl, tr, bl, tr, bl, br]);
                     }
                 }
 
