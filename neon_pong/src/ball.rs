@@ -3,8 +3,8 @@ use macroquad::prelude::*;
 pub struct Ball {
     pub pos: Vec2,
     pub vel: Vec2,
-    pub d: f32,
-    pub r: f32
+    d: f32,
+    r: f32
 }
 
 impl Ball {
