@@ -2,7 +2,6 @@
 use crate::ball::Ball;
 use macroquad::prelude::*;
 
-mod paddle;
 mod ball;
 
 #[macroquad::main("Neon Pong")]
