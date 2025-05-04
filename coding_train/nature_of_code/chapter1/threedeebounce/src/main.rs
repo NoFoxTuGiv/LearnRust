@@ -1,29 +1,43 @@
-//TODO:
-//
-// - Rotate camera over time.
-#![allow(unused)]
-
 use macroquad::prelude::*;
+use miniquad::date;
 
 #[macroquad::main("3D Bounce")]
 async fn main() {
     const CENTER: Vec3 = Vec3::new(0., 0., 0.);
-    const WIDTH: f32 = 15.;
+    const WIDTH: f32 = 30.;
+    const ROTATION_SPEED: f32 = 0.5;
 
-    let mut ball = Ball::new(CENTER, Vec3::new(0.4, 0.2, 0.3));
+    //Ball w/ random velocity vector
+    rand::srand(date::now() as u64);
+    let rx: f32 = rand::gen_range(-0.5, 0.5);
+    let ry: f32 = rand::gen_range(-0.5, 0.5);
+    let rz: f32 = rand::gen_range(-0.5, 0.5);
+    let mut ball = Ball::new(CENTER, Vec3::new(rx, ry, rz));
+
+    let mut c_angle: f32 = 0.;
 
     loop{
-        clear_background(LIGHTGRAY);
+        clear_background(BLACK);
+
+
+        //Camera Rotation
+        let delta_time = get_frame_time();
+        c_angle += delta_time * ROTATION_SPEED;
+
+        let c_radius = 50.0;
+        let c_height = 30.0;
+        let cam_x = CENTER.x + c_radius * f32::cos(c_angle);
+        let cam_z = CENTER.z + c_radius * f32::sin(c_angle);
+        let cam_y = CENTER.x + c_height;
 
         set_camera(&Camera3D {
-            position: vec3(-25., 15., 20.0),
+            position: vec3(cam_x, cam_y, cam_z),
             up: vec3(0., 1., 0.),
             target: CENTER,
             ..Default::default()
         });
 
         draw_cube_wires(CENTER, Vec3::splat(WIDTH), PURPLE);
-        // draw_cube(CENTER, Vec3::splat(WIDTH), None, PURPLE);
 
         ball.update();
         ball.show();
@@ -54,7 +68,7 @@ impl Ball {
     }
 
     fn show(&self) {
-        draw_sphere(self.pos, self.r, None, self.color);
+        draw_sphere_wires(self.pos, self.r, None, self.color);
     }
 
     fn edges(&mut self, width: f32) {
@@ -69,6 +83,5 @@ impl Ball {
         if self.pos.z > pos_wall || self.pos.z < neg_wall {
             self.vel.z *= -1.;
         }
-        // dbg!(self.pos);
     }
 }
