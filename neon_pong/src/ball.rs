@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use crate::paddle::Paddle;
 
 pub struct Ball {
     pub pos: Vec2,
@@ -27,7 +28,18 @@ impl Ball {
         }
         // Remove this later
         if self.pos.x >= screen_width() || self.pos.x <= 0. {
-            self.vel.x *= -1.
+            self.vel.x *= -1.;
+        }
+    }
+
+    pub fn paddle_check(&mut self, paddles: [&Paddle; 2]) {
+        for paddle in paddles {
+            if paddle.is_player()
+            && self.pos.y > paddle.pos.y 
+            && self.pos.y < (paddle.pos.y + paddle.get_height()) 
+            && self.pos.x < paddle.pos.x + paddle.get_width() {
+                self.vel.x *= -1.;
+            }
         }
     }
 
