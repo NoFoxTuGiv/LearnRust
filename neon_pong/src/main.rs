@@ -1,14 +1,17 @@
 #![allow(unused)]
 use ball::Ball;
-use paddle::Paddle;
 use macroquad::prelude::*;
+use paddle::Paddle;
 
 mod ball;
 mod paddle;
 
 #[macroquad::main("Neon Pong")]
 async fn main() {
-    let mut ball = Ball::new(Vec2::new(screen_width() / 2., screen_height() / 2.), Vec2::splat(2.));
+    let mut ball = Ball::new(
+        Vec2::new(screen_width() / 2., screen_height() / 2.),
+        Vec2::splat(2.),
+    );
 
     let mut player = Paddle::new(Vec2::new(10., screen_height() / 2.));
     let mut ai = Paddle::new(Vec2::new(screen_width() - 20., screen_height() / 2.));
@@ -16,7 +19,7 @@ async fn main() {
     println!("left paddle is player: {}", player.is_player());
     println!("right paddle is player: {}", ai.is_player());
 
-    loop{
+    loop {
         clear_background(BLACK);
 
         ball.update_pos();
@@ -25,6 +28,8 @@ async fn main() {
         player.show();
         player.update();
         ai.show();
+        let ball_pos = ball.pos;
+        ai.ai_move(ball_pos);
 
         let paddles = [&player, &ai];
         ball.paddle_check(paddles);

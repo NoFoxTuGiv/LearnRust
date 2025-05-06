@@ -1,6 +1,6 @@
 use macroquad::prelude::*;
 
-const MOVESPD: f32 = 500.;
+const BASE_SPEED: f32 = 500.;
 
 pub struct Paddle {
     pub pos: Vec2,
@@ -36,7 +36,7 @@ impl Paddle {
 
     pub fn update(&mut self) {
         let delta_time = get_frame_time();
-        let move_speed = MOVESPD * delta_time;
+        let move_speed = BASE_SPEED * delta_time;
 
         if self.player & is_key_down(KeyCode::W) {
             self.pos -= Vec2::new(0., move_speed);
@@ -44,9 +44,19 @@ impl Paddle {
         if self.player & is_key_down(KeyCode::S) {
             self.pos += Vec2::new(0., move_speed);
         }
+        self.edges();
+    }
 
-        //TODO: AI movement
+    pub fn ai_move(&mut self, b_pos: Vec2) {
+        let delta_time = get_frame_time();
+        let move_speed = BASE_SPEED * delta_time;
 
+        if self.pos.y + self.height / 2. < b_pos.y {
+            self.pos += Vec2::new(0., move_speed);
+        }
+        if self.pos.y + self.height / 2. > b_pos.y {
+            self.pos -= Vec2::new(0., move_speed);
+        }
         self.edges();
     }
 
