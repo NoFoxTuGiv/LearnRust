@@ -35,7 +35,9 @@ impl RunnerSquig {
         todo!();
     }
     fn take_step(&self) -> Vec2 {
+        // Placeholder food vector, will create via function later
         let food = vec![Vec2::new(50., 50.), Vec2::new(25., 25.)];
+        // Placeholder predators vector, will create via function later
         let predators = vec![Vec2::new(100., 100.), Vec2::new(150., 75.)];
         Vec2::ZERO
             .seek_food(&food)
