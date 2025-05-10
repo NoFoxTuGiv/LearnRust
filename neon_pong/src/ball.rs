@@ -16,14 +16,23 @@ impl Ball {
         Ball { pos, vel, d, r }
     }
 
-    pub fn update_pos(&mut self) {
+    pub fn update_pos(&mut self, scores: &mut[usize; 2]) -> [usize; 2] {
+        let d_time = get_frame_time();
         self.pos += self.vel;
         if self.pos.y >= screen_height() || self.pos.y <= 0. {
             self.vel.y *= -1.;
         }
         // TODO: Replace with new round logic
-        if self.pos.x < -75. || self.pos.x > screen_width() + 75. {
-            self.pos = Vec2::new(screen_width() / 2., screen_height() / 2.)
+        if self.pos.x < -75. {
+            self.pos = Vec2::new(screen_width() / 2., screen_height() / 2.);
+            scores[0] += 1;
+            *scores
+        } else if self.pos.x > screen_width() + 75. {
+            self.pos = Vec2::new(screen_width() / 2., screen_height() / 2.);
+            scores[1] += 1;
+            *scores
+        } else {
+            *scores
         }
     }
 

@@ -1,6 +1,5 @@
-#![allow(unused)]
-use ball::Ball;
 use macroquad::prelude::*;
+use ball::Ball;
 use paddle::Paddle;
 
 mod ball;
@@ -16,13 +15,12 @@ async fn main() {
     let mut player = Paddle::new(Vec2::new(10., screen_height() / 2.));
     let mut ai = Paddle::new(Vec2::new(screen_width() - 20., screen_height() / 2.));
 
-    println!("left paddle is player: {}", player.is_player());
-    println!("right paddle is player: {}", ai.is_player());
+    let mut scores: [usize; 2] = [0; 2];
 
     loop {
         clear_background(BLACK);
 
-        ball.update_pos();
+        scores = ball.update_pos(&mut scores);
         ball.draw();
 
         player.show();
@@ -33,6 +31,9 @@ async fn main() {
 
         let paddles = [&player, &ai];
         ball.paddle_check(paddles);
+
+        draw_text(&scores[0].to_string(), 25., 45., 55., WHITE);
+        draw_text(&scores[1].to_string(), screen_width() - 65., 45., 55., WHITE);
 
         next_frame().await;
     }
