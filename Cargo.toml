@@ -1,0 +1,8 @@
+[workspace]
+members = [
+  "neon_pong",
+  "coding_train/coding_challenges/*",
+  "coding_train/nature_of_code/chapter0/*",
+  "coding_train/nature_of_code/chapter1/*",
+  "coding_train/nature_of_code/chapter2/*",
+]

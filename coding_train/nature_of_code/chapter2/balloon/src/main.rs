@@ -27,14 +27,14 @@ async fn main() {
         let wind_str = format!("Wind: {}", wind.x);
 
         draw_wind(&wind);
-        draw_text(&wind_str, 25., screen_height() - 45., 20., WHITE);
+        draw_text(&wind_str, 25., screen_height() - 25., 20., WHITE);
 
         balloon.apply_force(wind);
         balloon.edges();
         balloon.update();
         balloon.show();
 
-        t += 0.01;
+        t += 0.005;
         next_frame().await;
     }
 }
@@ -46,9 +46,9 @@ fn gen_wind(noise: &Fbm<Perlin>, t: f64) -> Vec2 {
 }
 
 fn draw_wind(wind: &Vec2) {
-    let min_len = 15.;
+    let max_len = 50.;
     let start = vec2(screen_width() / 2., screen_height() - 25.);
-    let end = vec2((start.x + min_len) * wind.x, screen_height() - 25.);
+    let end = vec2(start.x + (max_len * wind.x), screen_height() - 25.);
     draw_arrow(start, end, 2., WHITE);
 }
 
@@ -119,7 +119,6 @@ impl Balloon {
         let wave_amp = 7.;
         let wave_frq = 3.;
         let wave_spd = 4.;
-
         let time = get_time();
 
         for i in 0..num_seg {
@@ -136,6 +135,7 @@ impl Balloon {
         }
 
         draw_circle(self.pos.x, self.pos.y, self.r, DARKPURPLE);
+
         draw_triangle(
             vec2(self.pos.x - 15., self.pos.y + 55.),
             vec2(self.pos.x + 15., self.pos.y + 55.),
