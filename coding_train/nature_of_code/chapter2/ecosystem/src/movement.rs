@@ -12,6 +12,11 @@ impl Vec2Behaviors for Vec2 {
     fn seek_food(self,foods: &[Vec2]) -> Vec2 {
         // Select closest food and create weighted vector towards that food.
         // Add this vector to the incoming positional vector.
+        for food in foods {
+            let shortest_distance: usize = usize::MAX;
+            let distance = self.pos - food.pos;
+            if distance 
+        }
         todo!();
     }
 
