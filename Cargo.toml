@@ -6,3 +6,4 @@ members = [
   "coding_train/nature_of_code/chapter1/*",
   "coding_train/nature_of_code/chapter2/*",
 ]
+resolver = "3"

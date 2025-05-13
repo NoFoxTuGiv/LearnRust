@@ -110,7 +110,7 @@ impl Balloon {
 
         self.vel += self.acc;
         self.pos += self.vel;
-        self.acc *= 0.;
+        self.acc = vec2(0., 0.);
     }
 
     fn show(&self) {
