@@ -1,5 +1,5 @@
 [package]
-name = "maze_generator"
+name = "maze_generator_nannou"
 version = "0.1.0"
 authors = ["Aaron Chavez"]
 edition = "2024"
