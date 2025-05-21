@@ -1,9 +1,7 @@
-use std::f32::consts::PI;
-
 use macroquad::prelude::*;
 
 const GRAVITY: Vec2 = vec2(0., 1.);
-const WIND: Vec2 = vec2(1.6, 0.);
+const WIND: Vec2 = vec2(1.5, 0.);
 
 #[macroquad::main("Friction")]
 async fn main() {
@@ -16,7 +14,7 @@ async fn main() {
                 screen_width() / 6. + (i as f32 * 150.),
                 screen_height() / 3., 
             ),
-            40. - i as f32 * 5.,
+            25. - i as f32 * 5.,
         );
         movers.push(mover);
     }
@@ -56,7 +54,7 @@ async fn main() {
                 mover.pos = mover.start_pos;
             }
             if mover.contacting_edge() {
-                let c = 0.05;
+                let c = 0.3;
                 let mut friction = mover.vel;
                 friction *= vec2(-1., -1.);
                 friction = set_mag(&mut friction, c);
@@ -92,11 +90,11 @@ struct Mover {
 }
 
 impl Mover {
-    fn new(pos: Vec2, r: f32) -> Self {
+    fn new(pos: Vec2, mass: f32) -> Self {
         let start_pos = pos;
         let vel = Vec2::splat(0.);
         let acc = Vec2::splat(0.);
-        let mass = PI * r * r / 500.;
+        let r = f32::sqrt(mass) * 10.;
         let is_clicked = false;
 
         Self { pos, start_pos, vel, acc, r, mass, is_clicked }
