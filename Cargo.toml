@@ -3,8 +3,10 @@ members = [
   "neon_pong",
   "raylib_test",
   "coding_train/coding_challenges/*",
-  "coding_train/nature_of_code/chapter0/*",
-  "coding_train/nature_of_code/chapter1/*",
-  "coding_train/nature_of_code/chapter2/*", "raylib_test",
+  "nature_of_code/chapter0/*",
+  "nature_of_code/chapter1/*",
+  "nature_of_code/chapter2/*",
+  # "nature_of_code/chapter3/*",
+  "raylib_test",
 ]
 resolver = "3"

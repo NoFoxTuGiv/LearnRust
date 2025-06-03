@@ -11,7 +11,7 @@ async fn main() {
     for i in 0..5 {
         let mover = Mover::new(
             vec2(
-                screen_width() / 6. + (i as f32 * 150.),
+                screen_width() / 6. + (i as f32 * 125.),
                 screen_height() / 3., 
             ),
             25. - i as f32 * 5.,

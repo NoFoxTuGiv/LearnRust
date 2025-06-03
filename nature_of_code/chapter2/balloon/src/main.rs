@@ -32,6 +32,7 @@ async fn main() {
         balloon.apply_force(wind);
         balloon.edges();
         balloon.update();
+        balloon.apply_drag();
         balloon.show();
 
         t += 0.005;
@@ -92,8 +93,8 @@ impl Balloon {
 
     fn edges(&mut self) {
         let top_edge_force = vec2(0., 20.);
-        let left_edge_force = vec2(10., 0.);
-        let right_edge_force = vec2(-10., 0.);
+        let left_edge_force = vec2(5., 0.);
+        let right_edge_force = vec2(-5., 0.);
         if self.pos.y - self.r < 0. {
             self.apply_force(top_edge_force);
         }
@@ -109,8 +110,15 @@ impl Balloon {
         self.apply_force(HELIUM);
 
         self.vel += self.acc;
+        self.vel.x = clamp(self.vel.x, -5., 5.);
+        self.vel.y = clamp(self.vel.y, -5., 5.);
         self.pos += self.vel;
         self.acc = vec2(0., 0.);
+    }
+    
+    fn apply_drag(&mut self) {
+        self.vel.x *= 0.9999;
+        self.vel.y *= 0.9999;
     }
 
     fn show(&self) {
