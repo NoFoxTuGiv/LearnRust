@@ -35,8 +35,8 @@ impl Baton {
     fn new() -> Baton {
         let x = screen_width() / 2.;
         let y = screen_height() / 2.;
-        let w = 100.;
-        let h = 10.;
+        let w = 200.;
+        let h = 15.;
 
         Baton {
             x,
@@ -78,15 +78,22 @@ impl Baton {
     /// This function should be called every frame to maintain interactive behavior.
     fn update(&mut self) {
         let center = vec2(screen_width() / 2., screen_height() / 2.);
+        let delta = get_frame_time();
+        let a_limit = 6.;
 
+        // -- Handle Keyboard Functionality --
+        // - Add constant acceleration
+        // - Reset angular velocity
         if is_key_down(KeyCode::Space) {
-            self.angle_v += 0.01;
+            self.angle_v += 0.05;
         }
 
         if is_key_pressed(KeyCode::Enter) {
             self.angle_v = 0.;
         }
 
+        // -- Handle Mouse Functionality --
+        // - Click and Drag
         if is_mouse_button_down(MouseButton::Left) {
             let m_pos: Vec2 = mouse_position().into();
             let current_m_angle = (m_pos - center).to_angle();
@@ -119,14 +126,19 @@ impl Baton {
             self.is_dragging = false;
         }
 
+        // apply linear angular drag
+        let damping = 0.5;
+        let alpha_drag = -damping * self.angle_v;
+        self.angle_v += alpha_drag * delta;
+
         // If we reach here, either:
         //    • We were never dragging, or
         //    • We just computed a release velocity (angle_v), or
         //    • We’re idle (mouse-up and is_dragging==false).
         //
         // Integrate inertia in all those cases:
-        self.angle_v = self.angle_v.clamp(-TAU * 4.0, TAU * 4.0);
-        self.angle += self.angle_v * get_frame_time();
+        self.angle_v = self.angle_v.clamp(-TAU * a_limit, TAU * a_limit);
+        self.angle += self.angle_v * delta;
     }
 
     /// Draws the baton.
