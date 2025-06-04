@@ -7,6 +7,6 @@ members = [
   "nature_of_code/chapter1/*",
   "nature_of_code/chapter2/*",
   # "nature_of_code/chapter3/*",
-  "raylib_test", "nature_of_code/chapter3/baton",
+  "raylib_test", "nature_of_code/chapter3/baton", "nature_of_code/chapter3/cannon",
 ]
 resolver = "3"
