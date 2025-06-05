@@ -35,6 +35,10 @@ async fn main() {
         draw_text(&scores[0].to_string(), 25., 45., 55., WHITE);
         draw_text(&scores[1].to_string(), screen_width() - 65., 45., 55., WHITE);
 
+        if is_key_pressed(KeyCode::Escape) {
+            break;
+        }
+
         next_frame().await;
     }
 }
