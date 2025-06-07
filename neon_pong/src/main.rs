@@ -11,8 +11,8 @@
 //! 7. Exits cleanly if the Escape key is pressed.
 //! 8. Awaits the next frame via `next_frame().await`.
 
-use macroquad::prelude::*;
 use ball::Ball;
+use macroquad::prelude::*;
 use paddle::Paddle;
 
 mod ball;
@@ -70,6 +70,18 @@ async fn main() {
         // Clear the background
         clear_background(BLACK);
 
+        // === Draw mid-line ===
+        (5..screen_height() as i32).step_by(20).for_each(|y| {
+            draw_line(
+                screen_width() / 2. - 2.,
+                y as f32,
+                screen_width() / 2. - 2.,
+                (y + 10) as f32,
+                4.,
+                LIGHTGRAY,
+            )
+        });
+
         // === Ball update & draw ===
         // Move the ball, handle top/bottom bounces, and reset + increment scores if it goes off‐screen.
         scores = ball.update_pos(&mut scores);
@@ -99,7 +111,13 @@ async fn main() {
         // Left player’s score in top-left corner.
         draw_text(&scores[0].to_string(), 25., 45., 55., WHITE);
         // AI's score in the top-right corner.
-        draw_text(&scores[1].to_string(), screen_width() - 65., 45., 55., WHITE);
+        draw_text(
+            &scores[1].to_string(),
+            screen_width() - 65.,
+            45.,
+            55.,
+            WHITE,
+        );
 
         // === Exit condition ===
         // If the user presses Escape, break out of the loop and terminate.

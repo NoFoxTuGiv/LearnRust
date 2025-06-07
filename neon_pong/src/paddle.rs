@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 /// The base movement speed of a paddle, in pixels per second.
 /// This value is multiplied by `delta_time` each frame to determine
 /// how far the paddle moves per update.
-const BASE_SPEED: f32 = 500.;
+const BASE_SPEED: f32 = 360.;
 
 /// Represents a paddle. Each paddle has a rectangular shape, a position, and is either controlled by the
 /// player (left side) or by simple AI logic (right side).
