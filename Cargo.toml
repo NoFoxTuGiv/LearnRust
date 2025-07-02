@@ -1,12 +1,12 @@
 [workspace]
 members = [
-  "neon_pong",
   "raylib_test",
   "coding_train/coding_challenges/*",
   "nature_of_code/chapter0/*",
   "nature_of_code/chapter1/*",
   "nature_of_code/chapter2/*",
-  # "nature_of_code/chapter3/*",
-  "raylib_test", "nature_of_code/chapter3/baton", "nature_of_code/chapter3/cannon",
+  "nature_of_code/chapter3/*",
+  "nature_of_code/chapter4/*",
+  "raylib_test",
 ]
 resolver = "3"

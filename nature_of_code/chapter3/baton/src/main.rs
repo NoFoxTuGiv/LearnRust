@@ -149,7 +149,7 @@ impl Baton {
             self.w,
             self.h,
             DrawRectangleParams {
-                offset: (0.5, 0.5).into(),
+                offset: vec2(0.5, 0.5),
                 rotation: self.angle,
                 color: DARKPURPLE,
             },
