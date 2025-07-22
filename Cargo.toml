@@ -7,6 +7,7 @@ members = [
   "nature_of_code/chapter2/*",
   "nature_of_code/chapter3/*",
   "nature_of_code/chapter4/*",
-  "raylib_test", "nature_of_code/chapter5/VehiclesAndSteering",
+  "nature_of_code/chapter5/*",
+  "raylib_test",
 ]
 resolver = "3"
