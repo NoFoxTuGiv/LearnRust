@@ -143,6 +143,8 @@ fn apply_friction(x_vel: f32, y_vel: f32) -> Vec2 {
 fn window_conf() -> Conf {
     Conf {
         window_title: "Thruster by NoFoxTuGiv".into(),
+        window_width: 600,
+        window_height: 400,
         ..Default::default()
     }
 }

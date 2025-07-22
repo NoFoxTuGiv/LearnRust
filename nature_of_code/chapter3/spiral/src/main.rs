@@ -11,17 +11,6 @@ async fn main() {
     loop {
         clear_background(DARKGRAY);
 
-        // == trail
-        // pass screenshot from last frame in as uniform material
-        // use gl shader
-        // draw texture ex with shader
-        // use default shader
-        // get screenshot of frame for next frame
-
-        // let x = r * f32::cos(theta) + offset.x;
-        // let y = r * f32::sin(theta) + offset.y;
-
-        // draw_circle(x, y, 12., Color::from_rgba(180, 0, 140, 255));
         draw_trail(radius, theta, offset);
 
         if radius < screen_height() * 0.4 && outward {
@@ -49,7 +38,9 @@ async fn main() {
 
 fn window_conf() -> Conf {
     Conf {
-        window_title: "Spiral".to_owned(),
+        window_title: "Spiral by NoFoxTuGiv".to_owned(),
+        window_width: 600,
+        window_height: 400,
         ..Default::default()
     }
 }
@@ -64,6 +55,11 @@ fn draw_trail(radius: f32, theta: f32, offset: Vec2) {
         let x = temp_r * f32::cos(temp_theta) + offset.x;
         let y = temp_r * f32::sin(temp_theta) + offset.y;
 
-        draw_circle(x, y, 12., Color::from_rgba(180, 0, 140, (alpha * 255.) as u8));
+        draw_circle(
+            x,
+            y,
+            12.,
+            Color::from_rgba(180, 0, 140, (alpha * 255.) as u8),
+        );
     }
 }

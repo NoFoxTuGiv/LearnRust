@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 use std::f32::consts::{PI, TAU};
 
-#[macroquad::main("Baton")]
+#[macroquad::main(window_conf())]
 async fn main() {
     let mut baton = Baton::new();
 
@@ -182,4 +182,13 @@ fn shortest_angular_distance(a: f32, b: f32) -> f32 {
         diff += TAU;
     }
     diff
+}
+
+fn window_conf() -> Conf {
+    Conf {
+        window_title: "Baton by NoFoxTuGiv".into(),
+        window_width: 600,
+        window_height: 400,
+        ..Default::default()
+    }
 }
