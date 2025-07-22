@@ -16,9 +16,6 @@
 //! - `D`: Toggle debug view (shows forces and state).
 //! - `Esc`: Exit the application.
 
-// TODO:
-// * Update to simple state machine for force calculation.
-
 mod vehicle;
 
 use std::fmt;
@@ -42,14 +39,18 @@ async fn main() {
     let mut state = State::Wander;
 
     let mut target = Vec2::ZERO;
-    let mut seek_force = Vec2::ZERO;
-    let mut flee_force = Vec2::ZERO;
 
     // Main loop.
     loop {
         clear_background(DARKGRAY);
 
+        // --- FlowField ---
+
         // --- Force Calulation ---
+        // Reset forces from last frame
+        let mut seek_force = Vec2::ZERO;
+        let mut flee_force = Vec2::ZERO;
+
         // Calculate steering force based on the current mode.
         match state {
             State::Seek => {
@@ -59,12 +60,14 @@ async fn main() {
             }
             State::Flee => {
                 target = Vec2::new(mouse_position().0, mouse_position().1);
-                flee_force = vehicle.flee(&target, vehicle.get_flee_radius());
+                flee_force = vehicle.flee(&target, vehicle.flee_radius);
                 vehicle.apply_force(flee_force);
+                // If flee_force is ZERO, there aren't nearby threats, wander this frame instead.
+                if flee_force == Vec2::ZERO {
+                    vehicle.wander();
+                }
             }
             State::Wander => {
-                flee_force = Vec2::ZERO;
-                seek_force = Vec2::ZERO;
                 target = Vec2::ZERO - Vec2::splat(10.);
                 vehicle.wander();
             }
@@ -74,53 +77,12 @@ async fn main() {
         let boundary_force = vehicle.boundary_force(100.);
         vehicle.apply_force(boundary_force);
 
-        // --- Vehicle Shit ---
+        // --- Vehicle Logic ---
         vehicle.update();
 
         // --- Debug and UI ---
         if debug {
-            draw_text("DEBUG", screen_width() - 65., 20., 24., BLUE);
-
-            let v_pos = vehicle.get_position();
-            let scale = 5000.;
-
-            // Draw Target
-            draw_ellipse(target.x, target.y, 10., 10., 0., GRAY);
-
-            // Draw Seek/Flee vector
-            match state {
-                State::Seek => {
-                    draw_line(
-                        v_pos.x,
-                        v_pos.y,
-                        v_pos.x + seek_force.x * scale,
-                        v_pos.y + seek_force.y * scale,
-                        2.,
-                        GREEN,
-                    );
-                }
-                State::Flee => {
-                    draw_line(
-                        v_pos.x,
-                        v_pos.y,
-                        v_pos.x + flee_force.x * scale,
-                        v_pos.y + flee_force.y * scale,
-                        2.,
-                        RED,
-                    );
-                }
-                _ => {}
-            }
-
-            // Draw boundary vectors in blue
-            draw_line(
-                v_pos.x,
-                v_pos.y,
-                v_pos.x + boundary_force.x * scale,
-                v_pos.y + boundary_force.y * scale,
-                2.,
-                BLUE,
-            );
+            draw_debug(&vehicle, &state, &target, &seek_force, &flee_force, &boundary_force);
         }
 
         let state_str = format!("Current State: {}", state);
@@ -133,7 +95,7 @@ async fn main() {
         // Vehicle Drawing
         vehicle.show();
 
-        // --- Raylib Style Exit ---
+        // --- Handle Keystrokes ---
         if is_key_pressed(KeyCode::Escape) {
             break;
         }
@@ -174,6 +136,68 @@ fn window_conf() -> Conf {
     }
 }
 
+/// Draws debug information on the screen, including forces and the current state.
+///
+/// # Arguments
+/// * `vehicle` - The `Vehicle` whose forces and state are being debugged.
+/// * `state` - The current `State` of the simulation.
+/// * `target` - The current target `Vec2` for seek/flee behaviors.
+/// * `seek_force` - The `Vec2` representing the calculated seek force.
+/// * `flee_force` - The `Vec2` representing the calculated flee force.
+/// * `boundary_force` - The `Vec2` representing the calculated boundary avoidance force.
+fn draw_debug(
+    vehicle: &Vehicle,
+    state: &State,
+    target: &Vec2,
+    seek_force: &Vec2,
+    flee_force: &Vec2,
+    boundary_force: &Vec2,
+) {
+    draw_text("DEBUG", screen_width() - 65., 20., 24., BLUE);
+
+    let v_pos = vehicle.position;
+    let scale = 5000.;
+
+    // Draw Target
+    draw_ellipse(target.x, target.y, 10., 10., 0., GRAY);
+
+    // Draw Seek/Flee vector
+    match state {
+        State::Seek => {
+            draw_line(
+                v_pos.x,
+                v_pos.y,
+                v_pos.x + seek_force.x * scale,
+                v_pos.y + seek_force.y * scale,
+                2.,
+                GREEN,
+            );
+        }
+        State::Flee => {
+            draw_line(
+                v_pos.x,
+                v_pos.y,
+                v_pos.x + flee_force.x * scale,
+                v_pos.y + flee_force.y * scale,
+                2.,
+                RED,
+            );
+        }
+        _ => {}
+    }
+
+    // Draw boundary vectors in blue
+    draw_line(
+        v_pos.x,
+        v_pos.y,
+        v_pos.x + boundary_force.x * scale,
+        v_pos.y + boundary_force.y * scale,
+        2.,
+        BLUE,
+    );
+}
+
+/// Represents the current steering behavior state of the vehicle.
 #[derive(PartialEq)]
 enum State {
     Wander,
@@ -181,6 +205,7 @@ enum State {
     Seek,
 }
 
+/// Implements 'Display' trait for 'State' enum, allowing it to be printed.
 impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {

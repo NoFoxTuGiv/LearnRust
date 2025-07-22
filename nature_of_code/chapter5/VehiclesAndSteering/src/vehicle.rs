@@ -8,7 +8,7 @@ use macroquad::{prelude::*, rand::gen_range};
 /// using steering behaviors.
 pub struct Vehicle {
     /// Current location
-    position: Vec2,
+    pub position: Vec2,
     /// Speed and direction.
     velocity: Vec2,
     /// Current rate of change in velocity. Reset every frame via update()
@@ -28,7 +28,7 @@ pub struct Vehicle {
     /// List of threat locationst the vehicle may be repulsed by
     threats: Vec<Vec2>,
     /// Flee radius for this vehicle
-    flee_radius: f32,
+    pub flee_radius: f32,
     /// Wander direction
     wander_theta: f32,
     /// New wander direction cooldown
@@ -38,6 +38,14 @@ pub struct Vehicle {
 }
 
 impl Vehicle {
+    const MAX_SPEED: f32 = 0.666;
+    const MAX_FORCE: f32 = 0.003;
+    const WANDER_CIRCLE_DIST: f32 = 100.;
+    const WANDER_CIRCLE_RADIUS: f32 = 25.;
+    const ARRIVAL_THRESHOLD: f32 = 100.;
+    const FRICTION_FACTOR: f32 = 0.999;
+    const FLEE_RADIUS: f32 = 250.;
+
     // --- NUSA (New, Update, Show, Apply_Force) ---
 
     /// Creates a new 'Vehicle' with a random position and initial velocity.
@@ -48,8 +56,8 @@ impl Vehicle {
     /// A new 'Vehicle' instance.
     pub fn new() -> Vehicle {
         let position = Vec2::new(
-            rand::gen_range(25., screen_height() - 25.),
             rand::gen_range(25., screen_width() - 25.),
+            rand::gen_range(25., screen_height() - 25.),
         );
         let velocity = Vec2::new(rand::gen_range(-3., 3.), rand::gen_range(-3., 3.));
         let acceleration = Vec2::splat(0.);
@@ -62,11 +70,11 @@ impl Vehicle {
             height: 25.,
             base: 22.,
             rotation: 0.,
-            max_speed: 0.666,
-            max_force: 0.006,
+            max_speed: Self::MAX_SPEED,
+            max_force: Self::MAX_FORCE,
             targets: vec![],
             threats: vec![],
-            flee_radius: 250.,
+            flee_radius: Self::FLEE_RADIUS,
             wander_theta,
             wander_cd: 0.,
             debug: false,
@@ -89,7 +97,7 @@ impl Vehicle {
         self.velocity = self.velocity.clamp_length_max(self.max_speed);
         self.position += self.velocity;
 
-        self.acceleration *= 0.;
+        self.acceleration = Vec2::ZERO;
     }
 
     /// Renders the vehicle as a triangle on the screen.
@@ -124,20 +132,6 @@ impl Vehicle {
     /// * `force` - The `Vec2` force to apply.
     pub fn apply_force(&mut self, force: Vec2) {
         self.acceleration += force.clamp_length_max(self.max_force);
-    }
-
-    // --- Getters ---
-
-    /// Returns the current position of the vehicle.
-    ///
-    /// # Returns
-    /// A `Vec2` representing the vehicle's position.
-    pub fn get_position(&self) -> Vec2 {
-        self.position
-    }
-
-    pub fn get_flee_radius(&self) -> f32 {
-        self.flee_radius
     }
 
     // --- Setters ---
@@ -184,18 +178,21 @@ impl Vehicle {
             let desired = -self.get_desired_velocity(threat, false, self.max_speed);
             (desired - self.velocity).clamp_length_max(self.max_force)
         } else {
-            self.wander(); // Wander if threat not in range
             Vec2::ZERO
         }
     }
 
+    /// Implements a "wander" steering behavior.
+    ///
+    /// The vehicle attempts to move towards a point on a circle in front of it,
+    /// with the target point on the circle changing randomly over time.
     pub fn wander(&mut self) {
         let vel = self.velocity.normalize_or_zero();
         let (cx, cy) = (
-            vel.x * 100. + self.position.x,
-            vel.y * 100. + self.position.y,
+            vel.x * Self::WANDER_CIRCLE_DIST + self.position.x,
+            vel.y * Self::WANDER_CIRCLE_DIST + self.position.y,
         );
-        let r = 25.;
+        let r = Self::WANDER_CIRCLE_RADIUS;
         let theta = self.wander_theta;
         let x = cx + r * f32::cos(theta);
         let y = cy + r * f32::sin(theta);
@@ -276,7 +273,7 @@ impl Vehicle {
     fn get_desired_velocity(&mut self, target: &Vec2, arrive: bool, max_speed: f32) -> Vec2 {
         let mut desired: Vec2 = *target - self.position;
         let distance: f32 = desired.length();
-        let speed: f32 = if arrive && distance < 100.0 {
+        let speed: f32 = if arrive && distance < Self::ARRIVAL_THRESHOLD {
             map_range(distance, 0., 100., 0., self.max_speed)
         } else {
             max_speed
@@ -286,27 +283,7 @@ impl Vehicle {
 
     /// Applies a small amount of friction to the vehicle's velocity every frame.
     fn apply_friction(&mut self) {
-        self.velocity *= 0.999;
-    }
-
-    /// Teleports the vehicle to the opposite side of the screen if it goes too far out of bounds.
-    ///
-    /// # Arguments
-    /// * `overscan` - Ammount to allow the vehicle to run off-screen before teleporting the
-    ///   vehicle to the opposite side.
-    #[allow(unused)]
-    fn wrap_screen(&mut self, overscan: f32) {
-        match self.position.x {
-            x if x <= 0. - overscan => self.position.x = screen_width() + overscan,
-            x if x >= screen_width() + overscan => self.position.x = 0. - overscan,
-            _ => {}
-        }
-
-        match self.position.y {
-            y if y <= 0. => self.position.y = screen_height(),
-            y if y >= screen_height() => self.position.y = 0.,
-            _ => {}
-        }
+        self.velocity *= Self::FRICTION_FACTOR;
     }
 }
 
