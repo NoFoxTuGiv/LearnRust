@@ -16,6 +16,10 @@ pub struct FlowField {
     rows: usize,
     /// The 2D vector field itself, stored as a vector of vectors of `Vec2`.
     field: Vec<Vec<Vec2>>,
+    /// The Z-axis for noise scrolling
+    zoff: f64,
+    /// The Z-axis scrolling toggle
+    pub scroll_z: bool,
 }
 
 impl FlowField {
@@ -58,6 +62,8 @@ impl FlowField {
             cols,
             rows,
             field,
+            zoff: 0.,
+            scroll_z: false,
         }
     }
 
@@ -105,12 +111,29 @@ impl FlowField {
         for x in 0..self.cols {
             let mut yoff: f64 = 0.;
             for y in 0..self.rows {
-                let angle = map_range(noise.get([xoff, yoff]) as f32, 0., 1., 0., TAU);
+                let angle = map_range(noise.get([xoff, yoff, self.zoff]) as f32, 0., 1., 0., TAU);
                 let cell = Vec2::from_angle(angle);
                 self.field[x][y] = cell;
                 yoff += Self::SAMPLE_RATE;
             }
             xoff += Self::SAMPLE_RATE;
+        }
+    }
+
+    pub fn update_field(&mut self, noise: &Fbm<Perlin>) {
+        let mut xoff: f64 = 0.;
+        for x in 0..self.cols {
+            let mut yoff: f64 = 0.;
+            for y in 0..self.rows {
+                let angle = map_range(noise.get([xoff, yoff, self.zoff]) as f32, 0., 1., 0., TAU);
+                let cell = Vec2::from_angle(angle);
+                self.field[x][y] = cell;
+                yoff += Self::SAMPLE_RATE;
+            }
+            xoff += Self::SAMPLE_RATE;
+        }
+        if self.scroll_z {
+            self.zoff += 0.0005;
         }
     }
 
@@ -135,6 +158,14 @@ impl FlowField {
             self.rows - 1,
         );
         self.field[col][row]
+    }
+
+    pub fn get_status(&self) -> String {
+        if self.scroll_z {
+            "Dynamic".into()
+        } else {
+            "Static".into()
+        }
     }
 }
 

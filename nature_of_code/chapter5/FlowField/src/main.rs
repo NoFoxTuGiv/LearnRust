@@ -14,9 +14,9 @@ mod flowfield;
 mod vehicle;
 
 use flowfield::FlowField;
-use vehicle::Vehicle;
 use macroquad::{prelude::*, rand::gen_range};
-use noise::{ Fbm, Perlin };
+use noise::{Fbm, Perlin};
+use vehicle::Vehicle;
 
 /// The main entry point for the application.
 ///
@@ -49,6 +49,11 @@ async fn main() {
     loop {
         clear_background(DARKGRAY);
 
+        // --- FlowField ---
+        if field.scroll_z {
+            field.update_field(&noise);
+        }
+
         // --- Vehicle Logic ---
         for vehicle in &mut vehicles {
             vehicle.follow(&field);
@@ -63,7 +68,17 @@ async fn main() {
         // Control instructions
         draw_text("Press Esc to Exit.", 10., screen_height() - 30., 24., GRAY);
         draw_text("Press D for Debug", 10., 20., 24., GRAY);
-        draw_text("Press SpaceBar to generate a new field.", 10., 50., 24., GRAY);
+        draw_text(
+            "Press SpaceBar to generate a new field.",
+            10.,
+            50.,
+            24.,
+            GRAY,
+        );
+        draw_text("Press Z to animate the flow field.", 10., 80., 24., GRAY);
+
+        let field_txt = format!("Field status: {}", field.get_status());
+        draw_text(&field_txt, 10., screen_height() - 60., 24., GRAY);
 
         // Vehicle Drawing
         for vehicle in &vehicles {
@@ -85,6 +100,10 @@ async fn main() {
             debug = !debug;
         }
 
+        if is_key_pressed(KeyCode::Z) {
+            field.scroll_z = !field.scroll_z;
+        }
+
         next_frame().await;
     }
 }
@@ -104,9 +123,7 @@ fn window_conf() -> Conf {
 ///
 /// # Arguments
 /// * `field` - The `FlowField` to display.
-fn draw_debug(
-    field: &FlowField,
-) {
+fn draw_debug(field: &FlowField) {
     // Draw FlowField
     field.show();
 }
