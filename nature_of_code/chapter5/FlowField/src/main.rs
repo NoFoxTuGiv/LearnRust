@@ -39,6 +39,7 @@ async fn main() {
     // Set up the initial noise for the flow field generation.
     let mut r = gen_range(0, u32::MAX);
     let mut noise = Fbm::<Perlin>::new(r);
+
     // Create the flow field with a specified resolution.
     let mut field: FlowField = FlowField::new(FF_RESOLUTION, &noise);
 

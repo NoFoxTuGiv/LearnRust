@@ -24,6 +24,7 @@ pub struct FlowField {
 
 impl FlowField {
     const SAMPLE_RATE: f64 = 0.03;
+    const Z_SAMPLE_RATE: f64 = 0.0005;
 
     /// Creates a new `FlowField` with a specified cell `resolution`.
     ///
@@ -133,7 +134,7 @@ impl FlowField {
             xoff += Self::SAMPLE_RATE;
         }
         if self.scroll_z {
-            self.zoff += 0.0005;
+            self.zoff += Self::Z_SAMPLE_RATE;
         }
     }
 
